@@ -220,5 +220,24 @@ class DirectoryController extends  AppController
    
 
 
+    public function validation()
+    {
+        $uid = SecurityUtil::getAppuserIdFromJwtPayload();
+        $y = $_GET['year'];
+        (string) $sum = $y+543;
+        $sub = substr($sum,2);
+        $check = $this->directoryService->findByIduser($uid);
+        $result = [];
+        if(!$check){
+            // $result=>true;
+            $this->pushDataToView["status"] = true;
+            $this->pushDataToView["year"] = $sub;
+        }
+        $this->pushDataToView["status"] = false;
+            $this->pushDataToView["year"] = $sub;
+        jsonResponse($this->pushDataToView);
+    
+    }
 }
-ini_set("memory_limit","2024M");
+
+// ini_set("memory_limit","2024M");

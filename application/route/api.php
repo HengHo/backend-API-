@@ -163,5 +163,6 @@ Route::delete(['AuthApi'], 'major', 'MajorController', 'crudDelete', null);
 //test
 Route::post(['AuthApi'], 'img', 'UtilController', 'imageUpload', null);
 Route::get(['AuthApi'], 'search', 'UtilController', 'search', null);
+Route::get(['AuthApi'], 'validation', 'DirectoryController', 'validation', null);
 
  

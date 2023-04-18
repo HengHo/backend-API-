@@ -120,6 +120,20 @@ class DirectoryService extends BaseDatabaseSupport implements DirectoryServiceIn
         $data->picture = UploadUtil::getImageApi($data->img,null);
         return $data;
     
+    }public function findByIduser($id)
+    {
+        $query = "SELECT *  ";
+
+        $query .="FROM directory AS directory ";
+        $query .="WHERE directory.`created_by`=:id ";
+
+        $this->query($query);
+        $this->bind(":id", (int)$id);
+        return  $this->single();
+        // $data = $this->single();
+        // $data->picture = UploadUtil::getImageApi($data->img,null);
+        // return $data;
+    
     }
 
     public function findByIdYearbook($id)

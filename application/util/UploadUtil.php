@@ -218,6 +218,41 @@ class UploadUtil
         }
     }
 
+
+    // public static function getProfilePicApi($imgName, $dateCreate, $isUpload = false)
+    // {
+    //     $displayPath = AppUtils::getServerIp() . MessageUtil::getConfig('base_data_display');
+    //     $uploadPath = MessageUtil::getConfig('base_data_path');
+
+    //     if ($imgName) {
+    //         $splitFileName = explode(".", $imgName);
+    //         $filePreName = $splitFileName[0];
+
+    //         $x = $filePreName . '_x.jpg';
+    //         $xx = $filePreName . '_xx.jpg';
+    //         $xxx = $filePreName . '_xxx.jpg';
+
+    //         $imgFolder = $displayPath . "/img";
+    //         $checkFolder = $uploadPath . "/img";
+    //         $filePath = "";
+    //         $checkPath = "";
+    //         if ($dateCreate) {
+    //             $filePath .= $imgFolder . "/" . DateUtil::getYearAndMonthFromDate($dateCreate) . "/";
+    //             $checkPath .= $checkFolder . "/" . DateUtil::getYearAndMonthFromDate($dateCreate) . "/";
+    //         }
+    //         return [
+    //             'path' => self::isFileExist($checkPath . $imgName) ? ($isUpload ? $checkPath . $imgName : $filePath . $imgName) : self::defaultProfilePic($displayPath, $isUpload)['path'],
+    //             'x' => self::isFileExist($checkPath . $x) ? ($isUpload ? $checkPath . $x : $filePath . $x) : self::defaultProfilePic($displayPath, $isUpload)['x'],
+    //             'xx' => self::isFileExist($checkPath . $xx) ? ($isUpload ? $checkPath . $xx : $filePath . $xx) : self::defaultProfilePic($displayPath, $isUpload)['xx'],
+    //             'xxx' => self::isFileExist($checkPath . $xxx) ? ($isUpload ? $checkPath . $xxx : $filePath . $xxx) : self::defaultProfilePic($displayPath, $isUpload)['xxx'],
+    //         ];
+    //     } else {
+    //         return self::defaultProfilePic($displayPath, $isUpload);
+    //     }
+    // }
+
+
+
     public static function defaultProfilePic($displayPath, $isUpload)
     {
         return [

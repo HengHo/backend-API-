@@ -31,7 +31,7 @@ class UserService extends BaseDatabaseSupport implements UserServiceInterface
         //$query .= "WHERE user.custom_field =:customParam ";
 
         //gen additional query and sort order
-        $additionalParam = $this->genAdditionalParamAndWhereForListPageV2($q_parameter,new User());
+        $additionalParam = $this->genAdditionalParamAndWhereForListPageV2($q_parameter, new User());
         if (!empty($additionalParam)) {
             if (!empty($additionalParam['additional_query'])) {
                 $query .= $additionalParam['additional_query'];
@@ -60,12 +60,12 @@ class UserService extends BaseDatabaseSupport implements UserServiceInterface
         $listTmp = $this->list();
         $list = [];
         if ($listTmp) {
-            foreach ($listTmp AS $item) {
+            foreach ($listTmp as $item) {
                 $item->id = (int)$item->id;
                 $item->picture = UploadUtil::getProfilePicApi($item->image, $item->created_at);
                 $item->status = (bool)$item->status;
                 $item->userRoles = $this->findUserRolesId($item->id);
-                unset($item->image);
+                // unset($item->image);
                 array_push($list, $item);
             }
         }
@@ -81,12 +81,12 @@ class UserService extends BaseDatabaseSupport implements UserServiceInterface
         $query .= "FROM user AS user ";
 
         //default where query
-        $query .= " WHERE user.`id` IS NOT NULL AND user.`stucode` = ''";
+        $query .= " WHERE (user.`id` IS NOT NULL AND user.`stucode` IS NULL) OR (user.`stucode` = '' )";
         //custom where query
         //$query .= "WHERE user.custom_field =:customParam ";
 
         //gen additional query and sort order
-        $additionalParam = $this->genAdditionalParamAndWhereForListPageV2($q_parameter,new User());
+        $additionalParam = $this->genAdditionalParamAndWhereForListPageV2($q_parameter, new User());
         if (!empty($additionalParam)) {
             if (!empty($additionalParam['additional_query'])) {
                 $query .= $additionalParam['additional_query'];
@@ -115,7 +115,7 @@ class UserService extends BaseDatabaseSupport implements UserServiceInterface
         $listTmp = $this->list();
         $list = [];
         if ($listTmp) {
-            foreach ($listTmp AS $item) {
+            foreach ($listTmp as $item) {
                 $item->id = (int)$item->id;
                 $item->picture = UploadUtil::getProfilePicApi($item->image, $item->created_at);
                 $item->status = (bool)$item->status;
@@ -148,7 +148,7 @@ class UserService extends BaseDatabaseSupport implements UserServiceInterface
 
     public function findUserDataById($id)
     {
-        $query = "SELECT user.id,stucode, username, email, image, created_at, user.status, GROUP_CONCAT(r.name) AS rolesText  FROM `user`
+        $query = "SELECT user.id,stucode, username, email,ask,answer, image, created_at, user.status, GROUP_CONCAT(r.name) AS rolesText  FROM `user`
          LEFT JOIN user_role ur ON user.`id` = ur.user 
          LEFT JOIN role r ON r.`id` = ur.role
          WHERE user.`id`=:id ";
@@ -159,8 +159,8 @@ class UserService extends BaseDatabaseSupport implements UserServiceInterface
             $data->picture = UploadUtil::getProfilePicApi($data->image, $data->created_at);
             $data->status = (bool)$data->status;
             $data->userRoles = $this->findUserRolesId($data->id);
-            $data->major = substr($data->stucode,2,-4);
-            $data->year = substr($data->stucode,0,-9);
+            $data->major = substr($data->stucode, 2, -4);
+            $data->year = substr($data->stucode, 0, -9);
             return $data;
         }
         return null;
@@ -174,7 +174,7 @@ class UserService extends BaseDatabaseSupport implements UserServiceInterface
         $this->query($query);
         $this->bind(":stu_code", (string)$StuCode);
         return $this->single();
-    } 
+    }
     public function findByadmin($val)
     {
         $query = "SELECT *  ";
@@ -182,7 +182,7 @@ class UserService extends BaseDatabaseSupport implements UserServiceInterface
         $query .= "WHERE user.`stucode`='' AND user.username LIKE :name ";
         $this->query($query);
         // $this->bind(":stu_code", (string)$val);
-        $this->bind(":name", '%'.$val.'%');
+        $this->bind(":name", '%' . $val . '%');
         return $this->list();
     }
     public function findByUsername($username,)
@@ -191,7 +191,7 @@ class UserService extends BaseDatabaseSupport implements UserServiceInterface
         $query .= "FROM user AS user ";
         $query .= "WHERE user.`username`LIKE :username ";
         $this->query($query);
-        $this->bind(":username", '%'.$username.'%');
+        $this->bind(":username", '%' . $username . '%');
         return $this->list();
     }
 
@@ -211,7 +211,7 @@ class UserService extends BaseDatabaseSupport implements UserServiceInterface
         $query .= "FROM user AS user ";                                 //                                             \
         $query .= "WHERE user.`email`=:email AND user.status IS TRUE";  //                                              > มันคือการ ใช้คำสั่ง sql ในการ query ข้อมูล user ที่มี email ตรงกับที่ส่งมา
         $this->query($query);  //สั่ง query                                                                       //     /
-        $this->bind(":email", (string)$email);// bind ตัวแปรแบบ pdo คือการเอาค่าใน $email มาให้กับ :email            //    /
+        $this->bind(":email", (string)$email); // bind ตัวแปรแบบ pdo คือการเอาค่าใน $email มาให้กับ :email            //    /
         return $this->single(); // ส่งข้อมูลเเบบ row เดียวกลับไป
     }
 
@@ -255,7 +255,7 @@ class UserService extends BaseDatabaseSupport implements UserServiceInterface
         $listTmp = $this->list();
         $list = [];
         if ($listTmp) {
-            foreach ($listTmp AS $item) {
+            foreach ($listTmp as $item) {
                 array_push($list, $item->role);
             }
         }
@@ -263,6 +263,6 @@ class UserService extends BaseDatabaseSupport implements UserServiceInterface
     }
     // public function subID($id)
     // {
-        
+
     // }
 }

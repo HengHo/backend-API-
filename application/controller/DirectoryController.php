@@ -1,4 +1,5 @@
 <?php
+
 /** ### Generated File. If you need to change this file manually, you must remove or change or move position this message, otherwise the file will be overwritten. ### **/
 /**
  * Created by Bekaku Php Back End System.
@@ -22,8 +23,8 @@ use application\controller\UtilController;
 class DirectoryController extends  AppController
 {
     /**
-    * @var DirectoryService
-    */
+     * @var DirectoryService
+     */
     private $directoryService;
     private $userService;
     private $yearbookService;
@@ -36,7 +37,6 @@ class DirectoryController extends  AppController
         $this->userService = new UserService($this->getDbConn());
         $this->yearbookService = new YearbookService($this->getDbConn());
         $this->util = new UtilController($this->getDbConn());
-        
     }
     public function __destruct()
     {
@@ -60,7 +60,7 @@ class DirectoryController extends  AppController
         $jsonData = $this->getJsonData(false);
         $this->pushDataToView = $this->getDefaultResponse(false);
 
-        if(!empty($jsonData) && !empty($uid)) {
+        if (!empty($jsonData) && !empty($uid)) {
             // $InDb = $this->directoryService->findByIdYearbook($jsonData->yearbook_id);
 
             //     // jsonResponse($majorclassInDb);
@@ -70,14 +70,13 @@ class DirectoryController extends  AppController
             //     ]);
             // }
 
-           $entity = new Directory($jsonData, $uid, false);
-               $lastInsertId = $this->directoryService->createByObject($entity);
-               if ($lastInsertId) {
-                    $this->pushDataToView = $this->setResponseStatus([SystemConstant::ENTITY_ATT => $this->directoryService->findById($lastInsertId)], true, i18next::getTranslation(('success.insert_succesfull')));
-                }
+            $entity = new Directory($jsonData, $uid, false);
+            $lastInsertId = $this->directoryService->createByObject($entity);
+            if ($lastInsertId) {
+                $this->pushDataToView = $this->setResponseStatus([SystemConstant::ENTITY_ATT => $this->directoryService->findById($lastInsertId)], true, i18next::getTranslation(('success.insert_succesfull')));
+            }
         }
         jsonResponse($this->pushDataToView);
-
     }
     public function crudReadSingle()
     {
@@ -98,28 +97,29 @@ class DirectoryController extends  AppController
         $uid = SecurityUtil::getAppuserIdFromJwtPayload();
         $jsonData = $this->getJsonData(false);
         $this->pushDataToView = $this->getDefaultResponse(false);
-		
-        if(!empty($jsonData) && !empty($uid)) {
-           $directory = new Directory($jsonData, $uid, true);
-           $tabel = "directory";
-            $this->util->dellImg($directory->id,$tabel);
 
-                if (isset($directory->id)) {
-                   $effectRow = $this->directoryService->updateByObject($directory, array('id' => $directory->id));
-                   if ($effectRow) {
-                       $this->pushDataToView = $this->setResponseStatus($this->pushDataToView, true, i18next::getTranslation(('success.update_succesfull')));
-                   }
-               }
-       }
+        if (!empty($jsonData) && !empty($uid)) {
+            $directory = new Directory($jsonData, $uid, true);
+            $tabel = "directory";
+            
+            $this->util->dellImg($directory->id, $tabel, $directory->img);
+            
+            if (isset($directory->id)) {
+                $effectRow = $this->directoryService->updateByObject($directory, array('id' => $directory->id));
+                if ($effectRow) {
+                    $this->pushDataToView = $this->setResponseStatus($this->pushDataToView, true, i18next::getTranslation(('success.update_succesfull')));
+                }
+            }
+        }
         jsonResponse($this->pushDataToView);
     }
     public function crudDelete()
     {
         $this->pushDataToView = $this->setResponseStatus($this->pushDataToView, true, i18next::getTranslation('success.delete_succesfull'));
-        $idParams = FilterUtils::filterGetString(SystemConstant::ID_PARAMS);//paramiter format : idOfNo1_idOfNo2_idOfNo3_idOfNo4 ...
+        $idParams = FilterUtils::filterGetString(SystemConstant::ID_PARAMS); //paramiter format : idOfNo1_idOfNo2_idOfNo3_idOfNo4 ...
         $idArray = explode(SystemConstant::UNDER_SCORE, $idParams);
         if (count($idArray) > 0) {
-            foreach ($idArray AS $id) {
+            foreach ($idArray as $id) {
                 $entity = $this->directoryService->findById($id);
                 if ($entity) {
                     $effectRow = $this->directoryService->deleteById($id);
@@ -133,13 +133,14 @@ class DirectoryController extends  AppController
         jsonResponse($this->pushDataToView);
     }
     public function ListYearbook()
-    {   $yearbook = FilterUtils::filterGetInt(SystemConstant::ID_PARAM);
-        $perPage = FilterUtils::filterGetInt(SystemConstant::PER_PAGE_ATT)> 0 ? FilterUtils::filterGetInt(SystemConstant::PER_PAGE_ATT) : 0;
+    {
+        $yearbook = FilterUtils::filterGetInt(SystemConstant::ID_PARAM);
+        $perPage = FilterUtils::filterGetInt(SystemConstant::PER_PAGE_ATT) > 0 ? FilterUtils::filterGetInt(SystemConstant::PER_PAGE_ATT) : 0;
         $this->setRowPerPage($perPage);
         $q_parameter = $this->initSearchParam(new Directory());
 
         $this->pushDataToView = $this->getDefaultResponse();
-        $this->pushDataToView[SystemConstant::DATA_LIST_ATT] = $this->directoryService->findByIdYearbook($yearbook,$this->getRowPerPage(),$q_parameter);
+        $this->pushDataToView[SystemConstant::DATA_LIST_ATT] = $this->directoryService->findByIdYearbook($yearbook, $this->getRowPerPage(), $q_parameter);
         $this->pushDataToView[SystemConstant::APP_PAGINATION_ATT] = $this->directoryService->getTotalPaging();
         jsonResponse($this->pushDataToView);
     }
@@ -147,23 +148,22 @@ class DirectoryController extends  AppController
     {
         $this->pushDataToView = $this->getDefaultResponse(false);
         $idParam = FilterUtils::filterGetString(SystemConstant::ID_PARAM);
-        if($entity = $this->directoryService->findById($idParam)){
-            if($entity){
+        if ($entity = $this->directoryService->findById($idParam)) {
+            if ($entity) {
                 // jsonResponse($entity);
-                if($entity->status === "confirm"){
+                if ($entity->status === "confirm") {
                     $confirm = "onhold";
-                }else{
+                } else {
                     $confirm = 1;
                 }
                 $effect = $this->directoryService->update([
-                
-                'status'=> $confirm   
-                ],['id'=>$entity->id]);
-            if($effect){
-                // $this->pushDataToView = $this->setResponseStatus($this->pushDataToView, false, i18next::getTranslation('error.error_something_wrong'));
-                $this->pushDataToView = $this->getDefaultResponse();
-            }
-                
+
+                    'status' => $confirm
+                ], ['id' => $entity->id]);
+                if ($effect) {
+                    // $this->pushDataToView = $this->setResponseStatus($this->pushDataToView, false, i18next::getTranslation('error.error_something_wrong'));
+                    $this->pushDataToView = $this->getDefaultResponse();
+                }
             }
         }
         jsonResponse($this->pushDataToView);
@@ -171,39 +171,38 @@ class DirectoryController extends  AppController
 
     public function notify()
     {
-        $perPage = FilterUtils::filterGetInt(SystemConstant::PER_PAGE_ATT)> 0 ? FilterUtils::filterGetInt(SystemConstant::PER_PAGE_ATT) : 0;
+        $perPage = FilterUtils::filterGetInt(SystemConstant::PER_PAGE_ATT) > 0 ? FilterUtils::filterGetInt(SystemConstant::PER_PAGE_ATT) : 0;
         $this->setRowPerPage($perPage);
         $q_parameter = $this->initSearchParam(new Directory());
-        
+
         $this->pushDataToView = $this->getDefaultResponse();
         // $this->pushDataToView[SystemConstant::DATA_LIST_ATT]= $this->commentService->findByIdDirectory($idDir,$this->getRowPerPage(),$q_parameter);
         // $this->userService->findById($this->pushDataToView->created_by);
-        $user =  $this->directoryService->findIdByStatus("onhold",$this->getRowPerPage(),$q_parameter);
+        $user =  $this->directoryService->findIdByStatus("onhold", $this->getRowPerPage(), $q_parameter);
         $userAbout = array();
-        foreach($user as $item){
-             
-                $item->userabout = $this->userService->findById($item->created_by);
-                unset($item->userabout->password);
-                unset($item->userabout->salt);
-                unset($item->userabout->status);
-                unset($item->userabout->created_at);
-                unset($item->userabout->updated_at);
-                unset($item->userabout->created_user);
-                unset($item->userabout->updated_user);
-                $item->yearbook = $this->yearbookService->findById($item->yearbook_id);
-                
+        foreach ($user as $item) {
+
+            $item->userabout = $this->userService->findById($item->created_by);
+            unset($item->userabout->password);
+            unset($item->userabout->salt);
+            unset($item->userabout->status);
+            unset($item->userabout->created_at);
+            unset($item->userabout->updated_at);
+            unset($item->userabout->created_user);
+            unset($item->userabout->updated_user);
+            $item->yearbook = $this->yearbookService->findById($item->yearbook_id);
+
 
             //    jsonResponse($item->userabout);
-                array_push($userAbout, $item);
-                 
+            array_push($userAbout, $item);
         }
-        $this->pushDataToView[SystemConstant::DATA_LIST_ATT]=$userAbout;
+        $this->pushDataToView[SystemConstant::DATA_LIST_ATT] = $userAbout;
         $this->pushDataToView[SystemConstant::APP_PAGINATION_ATT] = $this->directoryService->getTotalPaging();
         jsonResponse($this->pushDataToView);
         // jsonResponse($item);
 
     }
-       // public function imageUpload()
+    // public function imageUpload()
     // {
     //     $uid = SecurityUtil::getAppuserIdFromJwtPayload();
     //     $this->pushDataToView = $this->getDefaultResponse(false);
@@ -215,28 +214,27 @@ class DirectoryController extends  AppController
     //     // jsonResponse($this->pushDataToView.$imagename);
     //     jsonResponse($imagename);
     // }
-    
 
-   
+
+
 
 
     public function validation()
     {
         $uid = SecurityUtil::getAppuserIdFromJwtPayload();
         $y = $_GET['year'];
-        (string) $sum = $y+543;
-        $sub = substr($sum,2);
+        (string) $sum = $y + 543;
+        $sub = substr($sum, 2);
         $check = $this->directoryService->findByIduser($uid);
         $result = [];
-        if(!$check){
+        if (!$check) {
             // $result=>true;
             $this->pushDataToView["status"] = true;
             $this->pushDataToView["year"] = $sub;
         }
         $this->pushDataToView["status"] = false;
-            $this->pushDataToView["year"] = $sub;
+        $this->pushDataToView["year"] = $sub;
         jsonResponse($this->pushDataToView);
-    
     }
 }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by Bekaku Php Back End System.
  * Date: 2020-05-04 15:28:09
@@ -78,24 +79,24 @@ class UserController extends AppController
 
     public function crudAdd()
     {
-        $jsonData = $this->getJsonData(false);//รับ json มาไว้ในตัวแปร
+        $jsonData = $this->getJsonData(false); //รับ json มาไว้ในตัวแปร
         // jsonResponse($jsonData);
-        $this->pushDataToView = $this->getDefaultResponse(false);//เตรียมแสดง error
-       
+        $this->pushDataToView = $this->getDefaultResponse(false); //เตรียมแสดง error
+
         if (!empty($jsonData)) { // ถ้า jasonData ไม่ว่าง
             $entity = new User($jsonData, false); //ส่ง json ไป
             $validator = new UserValidator($entity);
-//  jsonResponse($entity);
+            //  jsonResponse($entity);
             //Custom Validate
-             //validate duplicate user name
+            //validate duplicate user name
             //  jsonResponse($jsonData->stucode);
-             if($jsonData->stucode !== "admin"){
+            if ($jsonData->stucode !== "admin") {
 
-            $appUserfindStuCode = $this->userService->findByStuCode($jsonData->stucode);
-            if (!empty($appUserfindStuCode)) {
-                $validator->addError('stuCode', i18next::getTranslation('error.duplicateStuCode', ['stuCode' => $jsonData->stucode]));
+                $appUserfindStuCode = $this->userService->findByStuCode($jsonData->stucode);
+                if (!empty($appUserfindStuCode)) {
+                    $validator->addError('stuCode', i18next::getTranslation('error.duplicateStuCode', ['stuCode' => $jsonData->stucode]));
+                }
             }
-        }
             //validate duplicate user name
             $appUserfindUsername = $this->userService->findByUsername($jsonData->username);
             if (!empty($appUserfindUsername)) {
@@ -113,11 +114,14 @@ class UserController extends AppController
                 $entity->password = ControllerUtil::genHashPassword($entity->password, $randomSalt);
                 $entity->salt = $randomSalt;
                 $entity->image = null;
-                if($entity->stucode == "admin"){
+                if ($entity->stucode == "admin") {
                     $entity->stucode = "";
-                    $entity->status = 0; 
+                    $entity->status = 0;
                     $userRolesVal[] = 1;
-                }else{$entity->status = "1";$userRolesVal[] = "3"; }
+                } else {
+                    $entity->status = "1";
+                    $userRolesVal[] = "3";
+                }
                 $lastInsertId = $this->userService->createByObject($entity);
                 if ($lastInsertId) {
                     //create user_role
@@ -129,7 +133,6 @@ class UserController extends AppController
         }
         // jsonResponse($entity);
         jsonResponse($this->pushDataToView);
-        
     }
 
     private function createRoles($userRoles, $uid)
@@ -138,7 +141,7 @@ class UserController extends AppController
 
             //delete old
             $this->roleService->deleteUserRoleByUserId($uid);
-            foreach ($userRoles AS $r) {
+            foreach ($userRoles as $r) {
                 $role = $this->roleService->findById($r);
                 if ($role) {
                     $this->roleService->createUserRoleByArray([
@@ -221,14 +224,15 @@ class UserController extends AppController
     //reset user's password by admin
     public function resetPassword()
     {
-        $uid = SecurityUtil::getAppuserIdFromJwtPayload();
+        // $uid = SecurityUtil::getAppuserIdFromJwtPayload();
         $this->pushDataToView = $this->setResponseStatus([], false, i18next::getTranslation('error.error_something_wrong'));
         $jsonData = $this->getJsonData();
 
-        if (!empty($jsonData) && !empty($uid)) {
+        if (!empty($jsonData)) {
             $user = $this->userService->findUserDataById($jsonData->user_id);
             if ($user) {
-                $newPwd = ControllerUtil::hashSha512(get_env("APP_DEFAULT_PASSWORD"));
+                // $newPwd = get_env("APP_DEFAULT_PASSWORD");
+                $newPwd = $jsonData->newpassword;
                 $randomSalt = ControllerUtil::getRadomSault();
                 $effectRow = $this->userService->update([
                     'password' => ControllerUtil::genHashPassword($newPwd, $randomSalt),
@@ -284,8 +288,8 @@ class UserController extends AppController
                     //delete old image
                     if ($user->image) {
                         UploadUtil::delProfileImagefile($user->image, $user->created_at);
-                    
-                        
+
+
                         $this->pushDataToView = $this->setResponseStatus([
                             'image' => $imagName,
                             'picture' => UploadUtil::getProfilePicApi($imagName, $user->created_at)
@@ -300,10 +304,10 @@ class UserController extends AppController
     public function crudDelete()
     {
         $this->pushDataToView = $this->getDefaultResponse(true);
-        $idParams = FilterUtils::filterGetString(SystemConstant::ID_PARAMS);//paramiter format : idOfNo1_idOfNo2_idOfNo3_idOfNo4 ...
+        $idParams = FilterUtils::filterGetString(SystemConstant::ID_PARAMS); //paramiter format : idOfNo1_idOfNo2_idOfNo3_idOfNo4 ...
         $idArray = explode(SystemConstant::UNDER_SCORE, $idParams);
         if (count($idArray) > 0) {
-            foreach ($idArray AS $id) {
+            foreach ($idArray as $id) {
                 $entity = $this->userService->findById($id);
                 if ($entity) {
                     $effectRow = $this->userService->deleteById($id);
@@ -317,46 +321,68 @@ class UserController extends AppController
         jsonResponse($this->pushDataToView);
     }
 
-    public function blockUser(){
-       $this->pushDataToView = $this->getDefaultResponse(false);
-       $idParam = FilterUtils::filterGetString(SystemConstant::ID_PARAM);
-       if($entity = $this->userService->findById($idParam)){
+    public function blockUser()
+    {
+        $this->pushDataToView = $this->getDefaultResponse(false);
+        $idParam = FilterUtils::filterGetString(SystemConstant::ID_PARAM);
+        if ($entity = $this->userService->findById($idParam)) {
 
-            if($entity){
+            if ($entity) {
                 //   jsonResponse($entity);
-                if($entity->status === true){
+                if ($entity->status === true) {
                     $confirm = 0;
-                }else{
+                } else {
                     $confirm = 1;
                 }
                 $effect = $this->userService->update([
-                    'status' => $confirm        
+                    'status' => $confirm
                 ], ['id' => $entity->id]);
-                if($effect){
+                if ($effect) {
                     // $this->pushDataToView = $this->setResponseStatus($this->pushDataToView, false, i18next::getTranslation('error.error_something_wrong'));
                     $this->pushDataToView = $this->getDefaultResponse();
-                      
                 }
             }
-       }
-       jsonResponse($this->pushDataToView);
+        }
+        jsonResponse($this->pushDataToView);
     }
 
     // public function addAdmin(){
     //     $this->pushDataToView = $this->getDefaultResponse();
     //     $idParam = FilterUtils::filterGetString(SystemConstant::ID_PARAM);
     //     if($entity = $this->userService->findById($idParam)){
- 
+
     //          if($entity){
     //              $effect = $this->userService->update([
     //                  'status' => 1
     //              ], ['id' => $entity->id]);
     //              if(!$effect){
     //                  $this->pushDataToView = $this->setResponseStatus($this->pushDataToView, false, i18next::getTranslation('error.error_something_wrong'));
-                       
+
     //              }
     //          }
     //     }
     //  }
-       
+    public function ask()
+    {
+        $uid = SecurityUtil::getAppuserIdFromJwtPayload();
+        $jsonData = $this->getJsonData(false);
+        $this->pushDataToView = $this->getDefaultResponse(true);
+
+        if (!empty($jsonData) && !empty($uid)) {
+            $this->userService->update(
+                [
+                    'ask' => $jsonData->ask,
+                    'answer' => $jsonData->answer,
+                ],
+                ['id' => $uid]
+            );
+        }
+        jsonResponse($this->pushDataToView);
+    }
+    public function askAnswer()
+    {
+        $id = $_GET['_id'];
+        jsonResponse($this->userService->findUserDataById($id));
+    }
+
 }

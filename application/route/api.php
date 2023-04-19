@@ -69,7 +69,7 @@ Route::delete(['AuthApi', 'PermissionGrant'], "apiClient", "ApiClientController"
 |--------------------------------------------------------------------------
 */
 Route::get(['AuthApi', 'PermissionGrant'], "apiClientIp", "ApiClientIpController", "crudList", "api_client_ip_list");
-Route::post(['AuthApi', 'PermissionGrant'], "apiClientIp", "ApiClientIpController", "crudAdd", "api_client_ip_add");
+// Route::post(['AuthApi', 'PermissionGrant'], "apiClientIp", "ApiClientIpController", "crudAdd", "api_client_ip_add");
 Route::get(['AuthApi', 'PermissionGrant'], "apiClientIpReadSingle", "ApiClientIpController", "crudReadSingle", "api_client_ip_view");
 Route::put(['AuthApi', 'PermissionGrant'], "apiClientIp", "ApiClientIpController", "crudEdit", "api_client_ip_edit");
 Route::delete(['AuthApi', 'PermissionGrant'], "apiClientIp", "ApiClientIpController", "crudDelete", "api_client_ip_delete");
@@ -79,13 +79,15 @@ Route::delete(['AuthApi', 'PermissionGrant'], "apiClientIp", "ApiClientIpControl
 |--------------------------------------------------------------------------
 */
 Route::get(['AuthApi', 'PermissionGrant'], "user", "UserController", "crudList", "user_list");
-Route::get(['AuthApi', 'PermissionGrant'], "admin", "UserController", "crudList", "crudListadmin");
+Route::get(['AuthApi', 'PermissionGrant'], "admin", "UserController", "crudListadmin", null);
 Route::post(['AuthApi', 'PermissionGrant'], "userSignUp", "UserController", "crudAdd", "user_add");
 Route::get(['AuthApi', 'PermissionGrant'], "userReadSingle", "UserController", "crudReadSingle", "user_view");
 Route::put(['AuthApi', 'PermissionGrant'], "user", "UserController", "crudEdit", "user_edit");
-Route::put(['AuthApi', 'PermissionGrant'], "resetUserPassword", "UserController", "resetPassword", "user_edit");
+Route::put([], "resetUserPassword", "UserController", "resetPassword");
 Route::delete(['AuthApi', 'PermissionGrant'], "user", "UserController", "crudDelete", "user_delete");
 Route::put(['AuthApi'], "userBlock", "UserController", "blockUser");
+Route::put(['AuthApi'], "ask", "UserController", "ask");
+Route::get(['AuthApi'], "askAnswer", "UserController", "askAnswer");
 Route::post(['AuthApi'], "changeAvatar", "UserController", "changeAvatar");
 /*
 |--------------------------------------------------------------------------

@@ -48,37 +48,37 @@ class AuthController extends AppController
     {
         $apiClientName = SecurityUtil::getReqHeaderByAtt(SystemConstant::API_NAME_ATT); //ไปถามหาว่า apiClient ใน Header มีค่าเป็นอะไร ในที่นี้มีค่าเป็น default แล้วเก็บค่าไว้ใน apiClientName
         if (!$apiClientName) { //ถ้าไม่มีให้แสดง error Api Client Not found
-            jsonResponse([//แสดงผล error เป็น json 
+            jsonResponse([ //แสดงผล error เป็น json 
                 SystemConstant::SERVER_STATUS_ATT => false, //status:false
-                SystemConstant::SERVER_MSG_ATT => 'Api Client Not found',//message:Api Client Not found
+                SystemConstant::SERVER_MSG_ATT => 'Api Client Not found', //message:Api Client Not found
             ], 401);
         }
 
-        $apiClient = $this->apiClientService->findByApiName($apiClientName);//ไปเช็คใน ตาราง api_client ว่า api_name มีตรงกันกับ api_name ที่ส่งไปไหม
-        if (!$apiClient) {//ถ้าไม่มีให้แสดง error Api Client Not found
-            jsonResponse([//แสดงผล error เป็น json 
-                SystemConstant::SERVER_STATUS_ATT => false,//status:false
-                SystemConstant::SERVER_MSG_ATT => 'Api Client Not found',//message:Api Client Not found
+        $apiClient = $this->apiClientService->findByApiName($apiClientName); //ไปเช็คใน ตาราง api_client ว่า api_name มีตรงกันกับ api_name ที่ส่งไปไหม
+        if (!$apiClient) { //ถ้าไม่มีให้แสดง error Api Client Not found
+            jsonResponse([ //แสดงผล error เป็น json 
+                SystemConstant::SERVER_STATUS_ATT => false, //status:false
+                SystemConstant::SERVER_MSG_ATT => 'Api Client Not found', //message:Api Client Not found
             ], 401);
         }
 
-        $jsonData = $this->getJsonData();//past true for convert object class to objec array // แปลงข้อมูลจาก json มาเก็บใน $jsonData
+        $jsonData = $this->getJsonData(); //past true for convert object class to objec array // แปลงข้อมูลจาก json มาเก็บใน $jsonData
         $data = $this->setResponseStatus([], false, i18next::getTranslation('error.err_username_or_passwd_notfound')); //เก็บ error ไว้รอเเสดงผลหากไม่เข้าเงื่อนไขด้านล่าง
-        if ($jsonData) {//ถ้า jsondata มีข้อมูล
+        if ($jsonData) { //ถ้า jsondata มีข้อมูล
             $email = FilterUtils::filterVarString($jsonData->_u); //ตั้งรูปแบบข้อมูล _u ที่ได้รับจาก body.row ให้เป็น string แล้วเก็บค่าใน email
-            $userpwd = FilterUtils::filterVarString($jsonData->_p);//ตั้งรูปแบบข้อมูล _p ที่ได้รับจาก body.row ให้เป็น string แล้วเก็บค่าใน userpwd
+            $userpwd = FilterUtils::filterVarString($jsonData->_p); //ตั้งรูปแบบข้อมูล _p ที่ได้รับจาก body.row ให้เป็น string แล้วเก็บค่าใน userpwd
 
-            $data = $this->authService->signin($email, $userpwd);//นำข้อมูลที่ได้้ไปทำการตรวจสอบด้วย mathod signin โดยแนบค่า email และ userpwd
+            $data = $this->authService->signin($email, $userpwd); //นำข้อมูลที่ได้้ไปทำการตรวจสอบด้วย mathod signin โดยแนบค่า email และ userpwd
 
             if ($data->status && $data->apiKey != null) { // ถ้า attribute status และ apiKey ใน object data ไม่เป็นค่า null
                 $appuserData = $this->userService->findByEmail($email); //ให้ทำการเรียก mothod findByEmail พร้อมด้วย parameter email แล้วมาเก็บค่าใน appuserData
-                if ($appuserData) {//ถ้าหาก appuserData มีข้อมูลแล้ว
+                if ($appuserData) { //ถ้าหาก appuserData มีข้อมูลแล้ว
 
                     $responseData = $this->userService->findUserDataById($appuserData->id); //ไปดึงข้อมูลของ user 
-                    $responseData->apiKey = $this->accessTokenService->createNewToken($data->apiKey, $appuserData->id, $apiClient->id, $apiClient->api_token);//สร้าง api key
-                      
+                    $responseData->apiKey = $this->accessTokenService->createNewToken($data->apiKey, $appuserData->id, $apiClient->id, $apiClient->api_token); //สร้าง api key
+
                     $data->userData = $responseData; // เอาค่าใน responseDaata ไปเก็บใน object userData
-                    unset($data->apiKey);// ทำลายค่า api key ที่ได้จาก service ทิ้ง
+                    unset($data->apiKey); // ทำลายค่า api key ที่ได้จาก service ทิ้ง
                 }
             }
         }
@@ -98,7 +98,7 @@ class AuthController extends AppController
     public function userCheckAuth()
     {
         $uid = SecurityUtil::getAppuserIdFromJwtPayload();
-//        jsonResponse($this->userService->findUserDataById($uid));
+        //        jsonResponse($this->userService->findUserDataById($uid));
         jsonResponse([
             SystemConstant::SERVER_STATUS_ATT => true,
             'userData' => $this->userService->findUserDataById($uid),
@@ -138,7 +138,7 @@ class AuthController extends AppController
                 } else {
                     $this->pushDataToView = $this->setResponseStatus([], false, i18next::getTranslation('error.error_something_wrong'));
                 }
-            }else{
+            } else {
                 $this->pushDataToView = $this->setResponseStatus([], false, i18next::getTranslation('error.passwordCurrentWrong'));
             }
         }

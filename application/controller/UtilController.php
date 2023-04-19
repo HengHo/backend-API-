@@ -72,22 +72,29 @@ class UtilController extends AppController
         // jsonResponse($this->pushDataToView.$imagename);
         jsonResponse($imagename);
     }
-    public function dellImg($id,$tabel)
+    public function dellImg($id,$tabel,$imgjson = null)
     {
         // jsonResponse($id.$tabel);
 
         if($tabel === "yearbook"){
             $img = $this->yearbookService->findById($id);
+            if($img->path_img != $imgjson){
             UploadUtil::delImgfileFromYearMonthFolder($img->path_img, null);
+            }
         }
         if($tabel === "directory"){
             $img = $this->directoryService->findById($id);
             // jsonResponse($img->img);
+            if($img->img != $imgjson){
+                // jsonResponse($img->img.$imgjson);
             UploadUtil::delImgfileFromYearMonthFolder($img->img, null);
+            }
         }
         if($tabel === "user"){
             $img = $this->userService->findById($id);
+            if($img->image != $imgjson){
             UploadUtil::delImgfileFromYearMonthFolder($img->image, null);
+            }
         }
         // jsonResponse()
     }

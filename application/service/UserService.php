@@ -21,7 +21,7 @@ class UserService extends BaseDatabaseSupport implements UserServiceInterface
         //if have param
         $data_bind_where = null;
 
-        $query = "SELECT id, username, email, image, status, created_at ";
+        $query = "SELECT id, username, email, image, status, stucode, created_at ";
 
         $query .= "FROM user AS user ";
 

@@ -376,12 +376,38 @@ class UserController extends AppController
                 ],
                 ['id' => $uid]
             );
-        }
+        }       
         jsonResponse($this->pushDataToView);
+    }
+    public function question()
+    {
+        $email = $_GET['_email'];
+        $data = $this->userService->findByEmail($email);
+        unset($data->id);
+        unset($data->stucode);
+        unset($data->username);
+        // unset($data->email);
+        unset($data->image);
+        unset($data->password);
+        unset($data->salt);
+        unset($data->status);
+        unset($data->created_at);
+        unset($data->updated_at);
+        unset($data->created_user);
+        unset($data->updated_user);
+        unset($data->answer);
+        jsonResponse($data);
+    }
+    public function answer()
+    {
+        $email = $_GET['email'];
+        $data = $this->userService->findByEmail($email);
+        jsonResponse($data);
     }
     public function askAnswer()
     {
-        $id = $_GET['_id'];
+        $email = $_GET['_email'];
+        $answer = $_GET['_answer'];
         jsonResponse($this->userService->findUserDataById($id));
     }
 

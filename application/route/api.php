@@ -87,7 +87,7 @@ Route::put([], "resetUserPassword", "UserController", "resetPassword");
 Route::delete(['AuthApi', 'PermissionGrant'], "user", "UserController", "crudDelete", "user_delete");
 Route::put(['AuthApi'], "userBlock", "UserController", "blockUser");
 Route::put(['AuthApi'], "ask", "UserController", "ask");
-Route::get(['AuthApi'], "askAnswer", "UserController", "askAnswer");
+Route::get(['AuthApi'], "question", "UserController", "question");
 Route::post(['AuthApi'], "changeAvatar", "UserController", "changeAvatar");
 /*
 |--------------------------------------------------------------------------

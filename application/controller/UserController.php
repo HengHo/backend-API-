@@ -395,7 +395,7 @@ class UserController extends AppController
         unset($data->updated_at);
         unset($data->created_user);
         unset($data->updated_user);
-        unset($data->answer);
+        // unset($data->answer);
         jsonResponse($data);
     }
     public function answer()

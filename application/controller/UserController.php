@@ -383,7 +383,7 @@ class UserController extends AppController
     {
         $email = $_GET['_email'];
         $data = $this->userService->findByEmail($email);
-        unset($data->id);
+        // unset($data->id);
         unset($data->stucode);
         unset($data->username);
         // unset($data->email);

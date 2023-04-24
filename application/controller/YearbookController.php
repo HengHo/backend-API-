@@ -162,6 +162,7 @@ class YearbookController extends  AppController
         $classle = array();
         foreach ($bymajor as $item) {
             $item->classle = $this->yearbookService->findBymajor($year, $item->id);
+            if(!$item->classle){$item->classle = "null";}
 
 
             array_push($classle, $item);
@@ -175,4 +176,26 @@ class YearbookController extends  AppController
         $this->pushDataToView[SystemConstant::DATA_LIST_ATT] = $this->yearbookService->findYear();
         jsonResponse($this->pushDataToView);
     }
+    // public function ListAll()
+    // {
+    //     $year = FilterUtils::filterGetInt(SystemConstant::YEAR_PARAM);
+    //     $perPage = FilterUtils::filterGetInt(SystemConstant::PER_PAGE_ATT) > 0 ? FilterUtils::filterGetInt(SystemConstant::PER_PAGE_ATT) : 0;
+    //     $this->setRowPerPage($perPage);
+    //     $q_parameter = $this->initSearchParam(new Yearbook());
+
+    //     $this->pushDataToView = $this->getDefaultResponse();
+    //     // $this->pushDataToView[SystemConstant::DATA_LIST_ATT] = $this->yearbookService->findByYear($year,$this->getRowPerPage(),$q_parameter);
+    //     $bymajor = $this->pushDataToView['dataList'] = $this->majorService->findAll($this->getRowPerPage(), $q_parameter);
+    //     // $this->yearbookService->findBymajor( $this->pushDataToView['dataList']->name);
+    //     $classle = array();
+    //     foreach ($bymajor as $item) {
+    //         $item->classle = $this->yearbookService->findBymajor($year, $item->id);
+
+
+    //         array_push($classle, $item);
+    //     }
+    //     $this->pushDataToView[SystemConstant::APP_PAGINATION_ATT] = $this->yearbookService->getTotalPaging();
+    //     jsonResponse($this->pushDataToView);
+    //     // jsonResponse($item);
+    // }
 }

@@ -162,7 +162,7 @@ class YearbookController extends  AppController
         $classle = array();
         foreach ($bymajor as $item) {
             $item->classle = $this->yearbookService->findBymajor($year, $item->id);
-            if(!$item->classle){$item->classle = "null";}
+            // if(!$item->classle){$item->classle = "null";}
 
 
             array_push($classle, $item);

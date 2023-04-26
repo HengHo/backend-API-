@@ -281,23 +281,28 @@ class UserController extends AppController
         $this->pushDataToView = $this->setResponseStatus([], false, i18next::getTranslation('error.error_something_wrong'));
         if (!empty($uid)) {
             $user = $this->userService->findUserDataById($uid);
+
             if (isset($_FILES[SystemConstant::APP_IMAGE_FILE_UPLOAD_ATT]) && is_uploaded_file($_FILES[SystemConstant::APP_IMAGE_FILE_UPLOAD_ATT]['tmp_name'])) {
                 $newName = UploadUtil::getUploadFileName($uid);
                 $imagName = UploadUtil::uploadProfilePic($_FILES[SystemConstant::APP_IMAGE_FILE_UPLOAD_ATT], $user->created_at, MessageUtils::getConfig('upload_image.default_width'), $newName);
                 if ($imagName) {
+        // jsonResponse($user);
+
                     //delete old image
                     if ($user->image) {
+                        
                         UploadUtil::delProfileImagefile($user->image, $user->created_at);
 
-
+                    }
                         $this->pushDataToView = $this->setResponseStatus([
                             'image' => $imagName,
                             'picture' => UploadUtil::getProfilePicApi($imagName, $user->created_at)
                         ], true);
-                    }
+                    
                 }
             }
         }
+       
         jsonResponse($this->pushDataToView);
     }
 

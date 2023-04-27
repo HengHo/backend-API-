@@ -101,7 +101,7 @@ class DirectoryController extends  AppController
         if (!empty($jsonData) && !empty($uid)) {
             $directory = new Directory($jsonData, $uid, true);
             $tabel = "directory";
-            
+            // jsonResponse($directory);
             $this->util->dellImg($directory->id, $tabel, $directory->img);
             
             if (isset($directory->id)) {

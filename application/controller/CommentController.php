@@ -86,12 +86,15 @@ class CommentController extends  AppController
         $uid = SecurityUtil::getAppuserIdFromJwtPayload();
         $jsonData = $this->getJsonData(false);
         $this->pushDataToView = $this->getDefaultResponse(false);
-		$tabel = "comment";
+		// $tabel = "comment";
         if(!empty($jsonData) && !empty($uid)) {
+            // $test = $this->util->jsonGetServerDateAndTime();
+            // jsonResponse($test);
+
            $comment = new Comment($jsonData, $uid, true);
                 if (isset($comment->id)) {
                    $effectRow = $this->commentService->updateByObject($comment, array('id' => $comment->id));
-                   $dell = $this->util->dellImg($comment->$id,$tabel);
+                   jsonResponse($comment);
                    if ($effectRow) {
                        $this->pushDataToView = $this->setResponseStatus($this->pushDataToView, true, i18next::getTranslation(('success.update_succesfull')));
                    }

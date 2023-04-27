@@ -26,10 +26,10 @@ class Directory extends BaseModel
             'phone' => self::TYPE_INTEGER,
             'facebook' => self::TYPE_STRING,
             'instagram' => self::TYPE_STRING,
-            'created_by' => self::TYPE_INTEGER,
-            'created_date' => self::TYPE_STRING,
-            'updated_by' => self::TYPE_INTEGER,
-            'updated_date' => self::TYPE_STRING,
+            'created_user' => self::TYPE_INTEGER,
+            'created_at' => self::TYPE_STRING,
+            'updated_user' => self::TYPE_INTEGER,
+            'updated_at' => self::TYPE_STRING,
             'status' => self::TYPE_BOOLEAN,
         )); 
  
@@ -46,10 +46,10 @@ class Directory extends BaseModel
             'phone' => self::TYPE_INTEGER,
             'facebook' => self::TYPE_STRING,
             'instagram' => self::TYPE_STRING,
-            // 'created_by' => self::TYPE_INTEGER,
-            // 'created_date' => self::TYPE_STRING,
-            // 'updated_by' => self::TYPE_INTEGER,
-            // 'updated_date' => self::TYPE_STRING,
+            // 'created_user' => self::TYPE_INTEGER,
+            // 'created_at' => self::TYPE_STRING,
+            'updated_user' => self::TYPE_INTEGER,
+            'updated_at' => self::TYPE_STRING,
             'status' => self::TYPE_BOOLEAN,
         ));
 

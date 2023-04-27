@@ -10,6 +10,7 @@ namespace application\util;
 
 use application\util\MessageUtils as MessageUtil;
 use DateTime;
+use DateTimeZone;
 use DateInterval;
 use DatePeriod;
 
@@ -18,15 +19,17 @@ class DateUtils
     const DATE_FOTMAT_FULL = "Y-m-d H:i:s a";
     const DATE_TIME_FORMAT = "Y-m-d H:m:s";
     const DATE_TIME_FORMAT_UNI = "Y-m-d H:i:s";
-
+    
     const DATE_FORMAT = "Y-m-d";
     const TIME_FORMAT = "H:m:s";
 
     public static function dateNow(): DateTime
     {
         $date = null;
+        // date_default_timezone_set('asia/bangkok');
         try {
-            $date = new DateTime();
+            // $date = new DateTime();
+            $date = new DateTime("now", new DateTimeZone("Asia/Bangkok"));
         } catch (\Exception $e) {
             ControllerUtil::displayError($e->getMessage());
         }
@@ -184,6 +187,7 @@ class DateUtils
     //
     public static function getDateNow($includeTime = true)
     {
+        date_default_timezone_set('Asia/Bangkok');  
         if ($includeTime == false) {
             return @date("Y-m-d");
         } else {

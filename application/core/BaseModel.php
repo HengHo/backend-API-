@@ -52,16 +52,21 @@ class BaseModel
         if ($jsonData && $object) {
             foreach ($this->getTableField() as $column => $dataType) {
 
+                // jsonResponse($column);
                 if (in_array($column, $this->getTableBaseField())) {
-
-                    if ($column == 'created_user' || $column == 'updated_user') {
+                    
+                    if ($column == 'created_user' || $column == 'updated_user' || $column == 'id') {
                         if (!$isUpdate) {
                             $object->{'created_user'} = $uid;
+                jsonResponse($column);
+
                         }
+                    
                         $object->{'updated_user'} = $uid;
+
                     }
 
-                    if ($column == 'created_at' || $column == 'updated_at') {
+                    if ($column == 'created_at' || $column == 'updated_at' || $column == 'id') {
                         if (!$isUpdate) {
                             $object->{'created_at'} = DateUtil::getDateNow();
                         }

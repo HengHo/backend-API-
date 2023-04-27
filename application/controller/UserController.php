@@ -170,17 +170,17 @@ class UserController extends AppController
 
     public function crudEdit()
     {
-        $uid = SecurityUtil::getAppuserIdFromJwtPayload();
-        $jsonData = $this->getJsonData(false);
-        $this->pushDataToView = $this->getDefaultResponse(false);
+        $uid = SecurityUtil::getAppuserIdFromJwtPayload(); // ดึงข้อมูล id ที่เข้าใช้งานอยู่
+        $jsonData = $this->getJsonData(false); // เรียก json data
+        $this->pushDataToView = $this->getDefaultResponse(false);// ใส่ error
 
-        if (!empty($jsonData) && !empty($uid)) {
+        if (!empty($jsonData) && !empty($uid)) { // ถ้า json ไม่ว่าง และ ถ้า uid ไม่ว่าง ให้ 
 
-            $user = new User($jsonData, $uid, true);
-            $validator = new UserValidator($user);
-            $appUserOld = $this->userService->findById($user->id);
-            if (!$appUserOld) {
-                ControllerUtil::f404Static();
+            $user = new User($jsonData, $uid, true); // ใช้โมเดล
+            $validator = new UserValidator($user); // ตรวจสอบ valida
+            $appUserOld = $this->userService->findById($user->id); //เรียกข้อมูลเก่าของ user
+            if (!$appUserOld) { //ถ้าไม่มีอันเก่าให้
+                ControllerUtil::f404Static(); // error
             }
 
             //validate duplicate user name
@@ -302,7 +302,7 @@ class UserController extends AppController
                 }
             }
         }
-       
+        
         jsonResponse($this->pushDataToView);
     }
 

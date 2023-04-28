@@ -58,7 +58,7 @@ class BaseModel
                     if ($column == 'created_user' || $column == 'updated_user' || $column == 'id') {
                         if (!$isUpdate) {
                             $object->{'created_user'} = $uid;
-                jsonResponse($column);
+                // jsonResponse($column);
 
                         }
                     
